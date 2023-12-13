@@ -2,7 +2,7 @@ name: Build & Deploy App
 
 env:
   registryName: t7jehtj4gnlu6mpnpreg.azurecr.io
-  repositoryName: techboost/dotnetcoreapp
+  repositoryName: np/testapp
   dockerFolderPath: ./Application/src/RazorPagesTestSample
   tag: ${{github.run_number}}
   appNamePrefix: t7jehtj4gnlu6
