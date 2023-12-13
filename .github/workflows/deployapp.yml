@@ -10,7 +10,7 @@ env:
 on:
   push:
     branches: [ main ]
-    paths: Application/*
+    paths: Application/**
   workflow_dispatch:
 
 jobs:
