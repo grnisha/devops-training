@@ -1,0 +1,49 @@
+name: Load Test Trigger
+
+on:
+  workflow_dispatch:
+
+env:
+  AZURE_WEBAPP_NAME: "t7jehtj4gnlu6-dev"    
+  LOAD_TEST_RESOURCE: "lt-demo-01"  
+  LOAD_TEST_RESOURCE_GROUP: "rg-loadtest" 
+
+jobs:
+  loadTest:
+    name: Load Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout GitHub Actions 
+        uses: actions/checkout@v2
+          
+      - name: Login to Azure
+        uses: azure/login@v1
+        continue-on-error: false
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+        
+      - name: 'Azure Load Testing'
+        uses: azure/load-testing@v1
+        with:
+          loadTestConfigFile: 'LoadTestConfig.yml'
+          loadTestResource: ${{ env.LOAD_TEST_RESOURCE }}
+          resourceGroup: ${{ env.LOAD_TEST_RESOURCE_GROUP }}
+          env: |
+            [
+              {
+              "name": "webapp",
+              "value": "${{ env.AZURE_WEBAPP_NAME }}.azurewebsites.net"
+              }
+            ]  
+
+    #   - uses: JasonEtco/create-an-issue@v2.9.1
+    #     if: ${{ failure() }}
+    #     env:
+    #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #     with:
+    #       filename: .github/ISSUE_TEMPLATE/load_test_report.md
+          
+      - uses: actions/upload-artifact@v2
+        with:
+          name: loadTestResults
+          path: ${{ github.workspace }}/loadTest
